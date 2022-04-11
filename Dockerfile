@@ -13,7 +13,7 @@ RUN apt update && apt upgrade -y && \
 RUN mkdir /home/dependencies
 WORKDIR /home/dependencies
 
-RUN wget https://www.zlib.net/zlib-1.2.11.tar.gz -O /tmp/zlib-1.2.11.tar.gz && \
+RUN wget https://www.zlib.net/fossils/zlib-1.2.11.tar.gz -O /tmp/zlib-1.2.11.tar.gz && \
 	tar xzvf /tmp/zlib-1.2.11.tar.gz && \
 	cd zlib-1.2.11 && \
 	./configure && \
@@ -56,28 +56,28 @@ RUN git clone --branch v2.13.2 https://github.com/catchorg/Catch2.git && \
 	make install && \
 	cd /home/dependencies
 
-RUN git clone https://github.com/aws-samples/aws-iot-securetunneling-localproxy && \
-	cd aws-iot-securetunneling-localproxy && \
-	mkdir build && \
-	cd build && \
-	cmake ../ && \
-	make
+#RUN git clone https://github.com/aws-samples/aws-iot-securetunneling-localproxy && \
+#	cd aws-iot-securetunneling-localproxy && \
+#	mkdir build && \
+#	cd build && \
+#	cmake ../ && \
+#	make
 
 # If you'd like to use this Dockerfile to build your LOCAL revisions to the
 # local proxy source code, uncomment the following three commands and comment
 # out the command above. Otherwise, we'll build the local proxy container
 # with fresh source from the GitHub repo.
 
-#RUN mkdir /home/dependencies/aws-iot-securetunneling-localproxy
-#
-#COPY ./ /home/dependencies/aws-iot-securetunneling-localproxy/
-#
-#RUN cd /home/dependencies/aws-iot-securetunneling-localproxy && \
-#    rm -rf build/ && \
-#    mkdir build && \
-#    cd build && \
-#    cmake ../ && \
-#    make
+RUN mkdir /home/dependencies/aws-iot-securetunneling-localproxy
+
+COPY ./ /home/dependencies/aws-iot-securetunneling-localproxy/
+
+RUN cd /home/dependencies/aws-iot-securetunneling-localproxy && \
+    rm -rf build/ && \
+    mkdir build && \
+    cd build && \
+    cmake ../ && \
+    make
 
 RUN mkdir -p /home/aws-iot-securetunneling-localproxy && \
 	cd /home/aws-iot-securetunneling-localproxy && \
@@ -94,7 +94,7 @@ FROM ubuntu:18.04
 # Install openssl for libssl dependency.
 
 RUN apt update && apt upgrade -y && \
-    apt install -y openssl wget && \
+    apt install -y openssl wget openssh-server && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
